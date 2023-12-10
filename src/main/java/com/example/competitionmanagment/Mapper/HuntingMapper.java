@@ -9,9 +9,14 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface HuntingMapper {
 
+
     HuntingMapper HM = Mappers.getMapper(HuntingMapper.class);
 
 
+    @Mapping(target = "id",source = "id")
+    @Mapping(target = "membernum",source = "member.num")
+    @Mapping(target = "competitioncode",source = "competition.code")
+    @Mapping(target = "fishname",source = "fish.name")
     HuntingDto toDto(Hunting hunting);
 
     @Mapping(target = "member.num",source = "membernum")

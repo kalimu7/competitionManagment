@@ -4,6 +4,7 @@ import com.example.competitionmanagment.Mapper.CompetitionMapper;
 import com.example.competitionmanagment.dto.competition.Competitiondto;
 import com.example.competitionmanagment.entity.Competition;
 import com.example.competitionmanagment.service.CompetitionServiceImp;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,15 @@ public class CompetitionController {
     private CompetitionServiceImp competitionServiceImp;
 
     @PostMapping("")
-    public ResponseEntity create(@RequestBody Competitiondto competitiondto){
+    public ResponseEntity create(@RequestBody @Valid Competitiondto competitiondto){
+
+
+
         competitiondto.code = competitiondto.location.substring(0,3) + competitiondto.date;
         Competition competition = CompetitionMapper.competitionmapper.toEntity(competitiondto);
+
         try {
+
             return ResponseEntity.ok(competitionServiceImp.addCompetition(competition));
         }catch (Exception e){
             return new ResponseEntity<>("not created", HttpStatus.BAD_REQUEST);
