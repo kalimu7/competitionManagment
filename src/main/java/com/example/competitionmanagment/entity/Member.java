@@ -1,10 +1,14 @@
 package com.example.competitionmanagment.entity;
-import com.brief.cmanagment.enums.identiyDocumentType;
+
+
+
+import com.example.competitionmanagment.enums.identiyDocumentType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +25,9 @@ public class Member {
     private int num;
     private String name;
     private String familyName;
-    private Date accessionDate;
+    private LocalDate accessionDate;
     private String nationality ;
+    @Enumerated(EnumType.STRING)
     private identiyDocumentType identity;
     private String identityNumber;
 

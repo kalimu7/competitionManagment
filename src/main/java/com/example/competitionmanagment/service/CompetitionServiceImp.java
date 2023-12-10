@@ -23,7 +23,9 @@ public class CompetitionServiceImp implements CompetitionService {
 
     @Override
     public List<Competition> fetchCompetition() {
-        return null;
+
+        return competitionRepository.findAll();
+
     }
 
     @Override

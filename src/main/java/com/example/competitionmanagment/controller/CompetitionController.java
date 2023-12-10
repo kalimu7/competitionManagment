@@ -6,9 +6,11 @@ import com.example.competitionmanagment.entity.Competition;
 import com.example.competitionmanagment.service.CompetitionServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("competition")
@@ -19,7 +21,7 @@ public class CompetitionController {
 
     @PostMapping("")
     public ResponseEntity create(@RequestBody Competitiondto competitiondto){
-        competitiondto.code = competitiondto.location.substring(0,3) + competitiondto.startTime;
+        competitiondto.code = competitiondto.location.substring(0,3) + competitiondto.date;
         Competition competition = CompetitionMapper.competitionmapper.toEntity(competitiondto);
         try {
             return ResponseEntity.ok(competitionServiceImp.addCompetition(competition));
@@ -29,9 +31,21 @@ public class CompetitionController {
     }
 
     @GetMapping("")
-    public String test(){
-        return "fuck you";
+    public List<Competitiondto> test(){
+
+
+            List<Competition> competitions = competitionServiceImp.fetchCompetition();
+            List<Competitiondto> competitiondtos = new ArrayList<>();
+            for (Competition C : competitions){
+            Competitiondto competitiondto = CompetitionMapper.competitionmapper.toDto(C);
+            competitiondtos.add(competitiondto);
+            }
+
+            return competitiondtos;
+
     }
+
+
 
 
 
