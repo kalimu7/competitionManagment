@@ -12,7 +12,6 @@ public class MemberDto {
     public String nationality ;
     public identiyDocumentType identity;
     public String identityNumber;
-
     public String competitionCode;
 
 

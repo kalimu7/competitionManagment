@@ -14,6 +14,7 @@ import java.util.List;
 @Table(name = "Level")
 public class Level {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int code;
     private String description;
     private int points;
