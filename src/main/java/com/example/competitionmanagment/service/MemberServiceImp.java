@@ -19,6 +19,7 @@ public class MemberServiceImp implements MemberService {
     @Autowired
     private CompetitionRepository competitionRepository;
 
+
     @Override
     public boolean checkdate(String code) {
 
@@ -53,5 +54,14 @@ public class MemberServiceImp implements MemberService {
     @Override
     public boolean Affectation(Member member) {
         return false;
+    }
+    @Override
+    public Boolean memberExist(String identiyNumber) {
+        Optional<Member> member =  memberRepository.findByIdentityNumber(identiyNumber);
+
+        if(member.isPresent()){
+            return false;
+        }
+        return true;
     }
 }

@@ -4,6 +4,8 @@ import com.example.competitionmanagment.entity.Member;
 
 public interface MemberService {
 
+    Boolean memberExist(String identiyNumber);
+
     boolean checkdate(String code);
 
     Member addMemeber(Member member);

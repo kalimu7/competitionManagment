@@ -8,12 +8,16 @@ import com.example.competitionmanagment.entity.Member;
 import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
 import com.example.competitionmanagment.service.serviceInterface.RankingService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("member")
@@ -26,13 +30,19 @@ public class MemberController {
     @Autowired
     private RankingService rankingService;
 
-    @PostMapping("/{code}")
-    public ResponseEntity create(@RequestBody MemberDto memberDto, @PathVariable String code){
+    @PostMapping("")
+    public ResponseEntity create(@Valid @RequestBody  MemberDto memberDto){
         try{
 
             if(!memberService.checkdate(memberDto.competitionCode)){
                 return new ResponseEntity<>("inscription is closed",HttpStatus.BAD_REQUEST);
             }
+            if(!memberService.memberExist(memberDto.identityNumber)){
+                return new ResponseEntity<>("memeber already exits",HttpStatus.BAD_REQUEST);
+            }
+
+
+
             Member member = MemberMapper.mm.toEntity(memberDto);
             member.setAccessionDate(LocalDate.now());
             Member member1 = memberService.addMemeber(member);
@@ -52,8 +62,14 @@ public class MemberController {
         }
     }
     @PostMapping("/ranking")
-    public ResponseEntity createranking(@RequestBody RankingDto rankingDto){
+    public ResponseEntity createranking(@Valid @RequestBody RankingDto rankingDto, BindingResult bindingResult){
         try {
+            if(bindingResult.hasErrors()){
+                List<String> errors = new ArrayList<>();
+                bindingResult.getFieldErrors().forEach(error -> errors.add(error.getDefaultMessage()));
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            }
+
 
             Ranking ranking = RankingMapper.RM.toEntity(rankingDto);
             return ResponseEntity.ok(rankingService.addRanking(ranking));

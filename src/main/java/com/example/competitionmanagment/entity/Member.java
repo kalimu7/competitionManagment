@@ -28,7 +28,6 @@ public class Member {
     private int num;
     private String name;
     private String familyName;
-    @FutureOrPresent(message = "date shouldnt be passed")
     private LocalDate accessionDate;
     private String nationality ;
     @Enumerated(EnumType.STRING)

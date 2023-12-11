@@ -1,6 +1,7 @@
 package com.example.competitionmanagment.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,8 +26,6 @@ public class Ranking {
     private Competition competition;
 
 
-    @Positive(message = "Rank should be positive")
     private int rank;
-    @Positive(message = "score should be positive")
     private int score;
 }
