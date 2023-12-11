@@ -1,6 +1,6 @@
 package com.example.competitionmanagment.dto.hunting;
 
-public class HuntingDto {
+public class HuntingDtoResponse {
 
     public int id;
     public int numberOfFish;
@@ -9,7 +9,8 @@ public class HuntingDto {
 
     public int membernum;
 
-    public float weight;
 
+
+    public int fishScore;
 
 }

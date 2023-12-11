@@ -10,6 +10,8 @@ import com.example.competitionmanagment.service.serviceInterface.HuntingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class HuntingServiceImp implements HuntingService {
 
@@ -40,9 +42,16 @@ public class HuntingServiceImp implements HuntingService {
     }
 
     @Override
-    public Hunting searchHuntingByHunting(Hunting hunting) {
-        //todo:later maybe
+    public Hunting searchHuntingByHunting(String code) {
+
         return null;
+    }
+
+    @Override
+    public List<Hunting> fetchHunting() {
+
+        return huntingRepository.findAll();
+
     }
 
 

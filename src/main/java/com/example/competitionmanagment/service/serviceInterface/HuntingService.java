@@ -5,11 +5,15 @@ import com.example.competitionmanagment.entity.Fish;
 import com.example.competitionmanagment.entity.Hunting;
 import com.example.competitionmanagment.entity.Member;
 
+import java.util.List;
+
 public interface HuntingService {
 
     Hunting addHunting(Hunting hunting);
     HuntingDto searchHunting(int num, String fishname);
 
-    Hunting searchHuntingByHunting(Hunting hunting);
+    Hunting searchHuntingByHunting(String competitioncode);
+
+    List<Hunting> fetchHunting();
 
 }
