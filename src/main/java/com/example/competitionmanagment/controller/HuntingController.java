@@ -3,22 +3,24 @@ package com.example.competitionmanagment.controller;
 import com.example.competitionmanagment.Mapper.FishMapper;
 import com.example.competitionmanagment.Mapper.HuntingMapper;
 import com.example.competitionmanagment.Mapper.HuntingResponseMapper;
+import com.example.competitionmanagment.dao.RankingRepository;
 import com.example.competitionmanagment.dto.fish.FishDto;
 import com.example.competitionmanagment.dto.hunting.HuntingDto;
 import com.example.competitionmanagment.dto.hunting.HuntingDtoResponse;
 import com.example.competitionmanagment.entity.Fish;
 import com.example.competitionmanagment.entity.Hunting;
+import com.example.competitionmanagment.entity.RandId;
+import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.FishService;
 import com.example.competitionmanagment.service.serviceInterface.HuntingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("hunting")
@@ -30,10 +32,19 @@ public class HuntingController {
     @Autowired
     private FishService fishService;
 
-    @PostMapping("")
-    public ResponseEntity create(@RequestBody @Valid HuntingDto huntingDto){
 
+
+    @PostMapping("")
+    public ResponseEntity create(@RequestBody @Valid HuntingDto huntingDto,BindingResult bindingResult){
+
+            if (bindingResult.hasErrors()) {
+                List<String> errors = new ArrayList<>();
+                bindingResult.getFieldErrors().forEach(error -> errors.add(error.getDefaultMessage()));
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            }
         try {
+
+
             if(!fishService.checkFishWeight(huntingDto.fishname,huntingDto.weight)){
                 return new ResponseEntity<>("fish weight is less the average weight",HttpStatus.BAD_REQUEST);
             }
@@ -86,15 +97,54 @@ public class HuntingController {
     }
 
     @GetMapping("/huntings")
-    public ResponseEntity fetchHunting(){
+    public ResponseEntity fetchHunting(@RequestParam String code){
+
         try {
-            List<Hunting> huntings = huntingService.fetchHunting();
+            /*
+            List<Ranking> rankings = new ArrayList<>();
+            List<Integer> memebers = huntingService.iddd(code);
+            List<Hunting> huntings = huntingService.fetchHunting(code);
             List<HuntingDtoResponse> huntingDtoResponses = new ArrayList<>();
             for(Hunting H :huntings){
                 HuntingDtoResponse huntingDtoResponse = HuntingResponseMapper.HRM.toDto(H);
+                huntingDtoResponse.totalScoreForRaw =  huntingDtoResponse.fishScore * huntingDtoResponse.numberOfFish;
                 huntingDtoResponses.add(huntingDtoResponse);
             }
-            return ResponseEntity.ok(huntingDtoResponses);
+            HashMap<Ranking,Integer> hashMap = new HashMap<>();
+            for(Integer id:memebers){
+                String competitionCode = "";
+                int totalScorePerId = 0;
+                for(HuntingDtoResponse H : huntingDtoResponses){
+                    if(H.membernum == id ){
+                        totalScorePerId = totalScorePerId + H.totalScoreForRaw;
+                        System.out.println(" id  " +  id + " h.id " + H.membernum);
+                    }else{
+                        System.out.println(" here must not be equal id  " +  id + " h.id " + H.membernum);
+                    }
+                    competitionCode = H.competitioncode;
+                }
+                Ranking ranking = new Ranking();
+                ranking.setScore(totalScorePerId);
+                RandId randId = new RandId();
+                randId.setMembernum(id);
+                randId.setCompetitoncode(competitionCode);
+                ranking.setId(randId);
+
+
+
+
+                rankings.add(ranking);
+
+            }
+            rankings.sort(Comparator.comparingInt(Ranking::getScore).reversed());
+            for (int i = 0; i < rankings.size(); i++) {
+                rankings.get(i).setRank(i + 1);
+            } */
+            List<Ranking> rankings = huntingService.calulateScore(code);
+
+
+            return ResponseEntity.ok(rankings);
+
         }catch (Exception e){
             return new ResponseEntity<>("something went wrong",HttpStatus.BAD_REQUEST);
         }

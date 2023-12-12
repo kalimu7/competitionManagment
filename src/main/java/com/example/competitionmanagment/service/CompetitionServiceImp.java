@@ -7,6 +7,8 @@ import com.example.competitionmanagment.service.serviceInterface.CompetitionServ
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,8 +31,15 @@ public class CompetitionServiceImp implements CompetitionService {
     }
 
     @Override
-    public Competition selectCompetition(String code) {
-        return null;
+    public List<Competition> selectCompetitionFilter(String filter) {
+        List<Competition> competitions = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        if(filter.equals("open")){
+            competitions = competitionRepository.findAllByDateIsAfter(today);
+        }else if(filter.equals("closed")) {
+            competitions = competitionRepository.findAllByDateIsBefore(today);
+        }
+        return competitions;
     }
 
     @Override

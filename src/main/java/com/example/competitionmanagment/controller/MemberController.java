@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -31,14 +32,29 @@ public class MemberController {
     private RankingService rankingService;
 
     @PostMapping("")
-    public ResponseEntity create(@Valid @RequestBody  MemberDto memberDto){
+    public ResponseEntity create(@Valid @RequestBody  MemberDto memberDto,BindingResult bindingResult){
         try{
+
+            if (bindingResult.hasErrors()) {
+                List<String> errors = new ArrayList<>();
+                bindingResult.getFieldErrors().forEach(error -> errors.add(error.getDefaultMessage()));
+                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            }
 
             if(!memberService.checkdate(memberDto.competitionCode)){
                 return new ResponseEntity<>("inscription is closed",HttpStatus.BAD_REQUEST);
             }
-            if(!memberService.memberExist(memberDto.identityNumber)){
-                return new ResponseEntity<>("memeber already exits",HttpStatus.BAD_REQUEST);
+
+            Integer memberExistResult = memberService.memberExist(memberDto);
+
+            if (!memberExistResult.equals(0)) {
+                String msg = "";
+                if (memberExistResult.equals(1)) {
+                    msg = "Member has been assigned to the competition successfully";
+                } else if (memberExistResult.equals(2)) {
+                    msg = "member is already registred";
+                }
+                return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
             }
 
 

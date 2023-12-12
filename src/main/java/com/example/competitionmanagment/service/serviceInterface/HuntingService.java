@@ -1,9 +1,7 @@
 package com.example.competitionmanagment.service.serviceInterface;
 
 import com.example.competitionmanagment.dto.hunting.HuntingDto;
-import com.example.competitionmanagment.entity.Fish;
-import com.example.competitionmanagment.entity.Hunting;
-import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.entity.*;
 
 import java.util.List;
 
@@ -14,6 +12,9 @@ public interface HuntingService {
 
     Hunting searchHuntingByHunting(String competitioncode);
 
-    List<Hunting> fetchHunting();
+    List<Hunting> fetchHunting(String code);
+    List<Integer> iddd(String code);
+
+     List<Ranking> calulateScore(String competitionCode);
 
 }

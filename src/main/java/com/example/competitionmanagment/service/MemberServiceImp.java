@@ -1,14 +1,21 @@
 package com.example.competitionmanagment.service;
 
+import com.example.competitionmanagment.Mapper.RankingMapper;
 import com.example.competitionmanagment.dao.CompetitionRepository;
 import com.example.competitionmanagment.dao.MemberRepository;
+import com.example.competitionmanagment.dao.RankingRepository;
+import com.example.competitionmanagment.dto.member.MemberDto;
+import com.example.competitionmanagment.dto.ranking.RankingDto;
 import com.example.competitionmanagment.entity.Competition;
 import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.entity.RandId;
+import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -18,6 +25,9 @@ public class MemberServiceImp implements MemberService {
 
     @Autowired
     private CompetitionRepository competitionRepository;
+
+    @Autowired
+    private RankingRepository rankingRepository;
 
 
     @Override
@@ -56,12 +66,31 @@ public class MemberServiceImp implements MemberService {
         return false;
     }
     @Override
-    public Boolean memberExist(String identiyNumber) {
-        Optional<Member> member =  memberRepository.findByIdentityNumber(identiyNumber);
+    public Integer memberExist(MemberDto memberDto) {
+        int res = 0;
+        Optional<Member> member =  memberRepository.findByIdentityNumber(memberDto.identityNumber);
 
         if(member.isPresent()){
-            return false;
+
+            RandId randId = new RandId();
+            randId.setCompetitoncode(memberDto.competitionCode);
+            randId.setMembernum(member.get().getNum());
+            Optional<Ranking> ranking = rankingRepository.findById(randId);
+            if(ranking.isEmpty()){
+
+                RankingDto rankingDto = new RankingDto();
+                rankingDto.competitoncode = memberDto.competitionCode;
+                rankingDto.membernum = member.get().getNum();
+                Ranking ranking1 = RankingMapper.RM.toEntity(rankingDto);
+                rankingRepository.save(ranking1);
+                res = 1;
+
+            }else{
+                res = 2;
+            }
+
         }
-        return true;
+
+        return res;
     }
 }

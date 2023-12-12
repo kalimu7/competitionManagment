@@ -58,6 +58,22 @@ public class CompetitionController {
             return competitiondtos;
 
     }
+    @GetMapping("/{filter}")
+    private ResponseEntity fetchCompetitionByFilter(@PathVariable String filter){
+
+        try {
+            List<Competitiondto> competitiondtos = new ArrayList<>();
+            List<Competition> competitions = competitionServiceImp.selectCompetitionFilter(filter);
+            for (Competition C : competitions){
+                Competitiondto competitiondto = CompetitionMapper.competitionmapper.toDto(C);
+                competitiondtos.add(competitiondto);
+            }
+            return ResponseEntity.ok(competitiondtos);
+        }catch (Exception e){
+            return new ResponseEntity<>("something wrong",HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
 
 

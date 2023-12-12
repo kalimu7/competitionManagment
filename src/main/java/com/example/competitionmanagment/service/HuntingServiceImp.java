@@ -1,15 +1,19 @@
 package com.example.competitionmanagment.service;
 
 import com.example.competitionmanagment.Mapper.HuntingMapper;
+import com.example.competitionmanagment.Mapper.HuntingResponseMapper;
 import com.example.competitionmanagment.dao.HuntingRepository;
+import com.example.competitionmanagment.dao.RankingRepository;
 import com.example.competitionmanagment.dto.hunting.HuntingDto;
-import com.example.competitionmanagment.entity.Fish;
-import com.example.competitionmanagment.entity.Hunting;
-import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.dto.hunting.HuntingDtoResponse;
+import com.example.competitionmanagment.entity.*;
 import com.example.competitionmanagment.service.serviceInterface.HuntingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -17,6 +21,10 @@ public class HuntingServiceImp implements HuntingService {
 
     @Autowired
     private HuntingRepository huntingRepository;
+
+    @Autowired
+    private RankingRepository rankingRepository;
+
     @Override
     public Hunting addHunting(Hunting hunting) {
         HuntingDto huntingDto = searchHunting(hunting.getMember().getNum(),hunting.getFish().getName());
@@ -48,10 +56,64 @@ public class HuntingServiceImp implements HuntingService {
     }
 
     @Override
-    public List<Hunting> fetchHunting() {
+    public List<Hunting> fetchHunting(String code) {
 
-        return huntingRepository.findAll();
+        Competition competition = new Competition();
+        competition.setCode(code);
 
+        return huntingRepository.findAllByCompetition(competition);
+
+    }
+
+    public List<Ranking> calulateScore(String CompetitionCode){
+
+        List<Ranking> rankings = new ArrayList<>();
+        List<Integer> memebers = iddd(CompetitionCode);
+        List<Hunting> huntings = fetchHunting(CompetitionCode);
+        List<HuntingDtoResponse> huntingDtoResponses = new ArrayList<>();
+
+        for(Hunting H :huntings){
+            HuntingDtoResponse huntingDtoResponse = HuntingResponseMapper.HRM.toDto(H);
+            huntingDtoResponse.totalScoreForRaw =  huntingDtoResponse.fishScore * huntingDtoResponse.numberOfFish;
+            huntingDtoResponses.add(huntingDtoResponse);
+        }
+
+        for(Integer id:memebers){
+            String competitionCode = "";
+            int totalScorePerId = 0;
+            for(HuntingDtoResponse H : huntingDtoResponses){
+                if(H.membernum == id ){
+                    totalScorePerId = totalScorePerId + H.totalScoreForRaw;
+                    System.out.println(" id  " +  id + " h.id " + H.membernum);
+                }else{
+                    System.out.println(" here must not be equal id  " +  id + " h.id " + H.membernum);
+                }
+                competitionCode = H.competitioncode;
+            }
+
+            Ranking ranking = new Ranking();
+            ranking.setScore(totalScorePerId);
+            RandId randId = new RandId();
+            randId.setMembernum(id);
+            randId.setCompetitoncode(competitionCode);
+            ranking.setId(randId);
+
+            rankings.add(ranking);
+
+        }
+        rankings.sort(Comparator.comparingInt(Ranking::getScore).reversed());
+        for (int i = 0; i < rankings.size(); i++) {
+            rankings.get(i).setRank(i + 1);
+        }
+
+        rankingRepository.saveAll(rankings);
+
+        return rankings;
+    }
+
+    @Override
+    public List<Integer> iddd(String code) {
+        return huntingRepository.FindMemberid(code);
     }
 
 

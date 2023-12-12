@@ -9,6 +9,8 @@ public class HuntingDtoResponse {
 
     public int membernum;
 
+    public int totalScoreForRaw;
+
 
 
     public int fishScore;
