@@ -13,6 +13,7 @@ public interface CompetitionService {
 
     List<Competition> selectCompetitionFilter(String filter);
 
+
     List<Member> displayMemebersOfCompetition(String code);
 
 

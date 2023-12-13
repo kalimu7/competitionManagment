@@ -11,4 +11,5 @@ public interface FishRepository extends JpaRepository<Fish,String> {
 
 
     Optional<Fish> findByName(String name);
+
 }

@@ -8,6 +8,8 @@ import com.example.competitionmanagment.entity.Member;
 import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
 import com.example.competitionmanagment.service.serviceInterface.RankingService;
+import com.example.competitionmanagment.util.MySpecificException;
+import com.example.competitionmanagment.util.SpecingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,17 +34,15 @@ public class MemberController {
     private RankingService rankingService;
 
     @PostMapping("")
-    public ResponseEntity create(@Valid @RequestBody  MemberDto memberDto,BindingResult bindingResult){
-        try{
+    public ResponseEntity create(@Valid @RequestBody MemberDto memberDto) {
 
-            if (bindingResult.hasErrors()) {
-                List<String> errors = new ArrayList<>();
-                bindingResult.getFieldErrors().forEach(error -> errors.add(error.getDefaultMessage()));
-                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-            }
+
+
 
             if(!memberService.checkdate(memberDto.competitionCode)){
-                return new ResponseEntity<>("inscription is closed",HttpStatus.BAD_REQUEST);
+
+                throw new MySpecificException(" Inscription is closed ");
+                //return new ResponseEntity<>("inscription is closed",HttpStatus.BAD_REQUEST);
             }
 
             Integer memberExistResult = memberService.memberExist(memberDto);
@@ -54,48 +54,39 @@ public class MemberController {
                 } else if (memberExistResult.equals(2)) {
                     msg = "member is already registred";
                 }
-                return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+                throw new SpecingException(msg);
             }
-
-
 
             Member member = MemberMapper.mm.toEntity(memberDto);
             member.setAccessionDate(LocalDate.now());
-            Member member1 = memberService.addMemeber(member);
+            Member member1 = memberService.addMemeber(member,memberDto.competitionCode);
             //add an instance to the Ranking
             RankingDto rankingDto = new RankingDto();
             rankingDto.competitoncode = memberDto.competitionCode;
             rankingDto.membernum = member1.getNum();
             Ranking ranking = RankingMapper.RM.toEntity(rankingDto);
             rankingService.addRanking(ranking);
-
             return ResponseEntity.ok(member1);
 
-        }catch (Exception e){
 
-            return new ResponseEntity<>("not created", HttpStatus.BAD_REQUEST);
-
-        }
     }
     @PostMapping("/ranking")
-    public ResponseEntity createranking(@Valid @RequestBody RankingDto rankingDto, BindingResult bindingResult){
-        try {
-            if(bindingResult.hasErrors()){
-                List<String> errors = new ArrayList<>();
-                bindingResult.getFieldErrors().forEach(error -> errors.add(error.getDefaultMessage()));
-                return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-            }
-
+    public ResponseEntity createranking(@Valid @RequestBody RankingDto rankingDto){
 
             Ranking ranking = RankingMapper.RM.toEntity(rankingDto);
             return ResponseEntity.ok(rankingService.addRanking(ranking));
 
-        }catch (Exception e){
+    }
 
-            return new ResponseEntity<>("something wrong",HttpStatus.BAD_REQUEST);
-
+    @PostMapping("/{keyword}")
+    public ResponseEntity search(@PathVariable String keyword ){
+        List<Member> members = memberService.searchMember(keyword);
+        List<MemberDto> memberDtos = new ArrayList<>();
+        for(Member M : members){
+            MemberDto memberDto = MemberMapper.mm.toDto(M);
+            memberDtos.add(memberDto);
         }
-
+        return ResponseEntity.ok(memberDtos);
     }
 
 }

@@ -11,11 +11,13 @@ import com.example.competitionmanagment.entity.Member;
 import com.example.competitionmanagment.entity.RandId;
 import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
+import com.example.competitionmanagment.util.MySpecificException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,17 +50,31 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public Member addMemeber(Member member) {
+    public Member addMemeber(Member member,String code) {
+        competitionRepository.findByCode(code).orElseThrow(()->new MySpecificException("no competition with this code"));
 
+        this.incrementNumberOfParticipant(code);
         return memberRepository.save(member);
-
     }
 
 
 
     @Override
-    public Member searchMember(String name, int id) {
-        return null;
+    public List<Member> searchMember(String name) {
+
+        return memberRepository.findMemberByNameOrFamilyNameOrIdentityNumber(name,name,name);
+
+
+    }
+
+    @Override
+    public void incrementNumberOfParticipant(String code) {
+        Optional<Competition> competition = competitionRepository.findByCode(code);
+        if (competition.isPresent()){
+            Competition competition1 = competition.get();
+            competition1.setNumberOfParticipants(competition1.getNumberOfParticipants() + 1);
+            competitionRepository.save(competition1);
+        }
     }
 
     @Override
@@ -83,6 +99,7 @@ public class MemberServiceImp implements MemberService {
                 rankingDto.membernum = member.get().getNum();
                 Ranking ranking1 = RankingMapper.RM.toEntity(rankingDto);
                 rankingRepository.save(ranking1);
+                this.incrementNumberOfParticipant(memberDto.competitionCode);
                 res = 1;
 
             }else{

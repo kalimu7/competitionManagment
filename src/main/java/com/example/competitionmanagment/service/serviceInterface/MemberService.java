@@ -4,6 +4,7 @@ import com.example.competitionmanagment.dto.member.MemberDto;
 import com.example.competitionmanagment.entity.Member;
 
 import java.util.HashMap;
+import java.util.List;
 
 public interface MemberService {
 
@@ -11,9 +12,11 @@ public interface MemberService {
 
     boolean checkdate(String code);
 
-    Member addMemeber(Member member);
+    Member addMemeber(Member member,String code);
 
-    Member searchMember(String name,int id);
+    List<Member> searchMember(String name);
+
+    void incrementNumberOfParticipant(String code);
 
     boolean Affectation(Member member);
 
