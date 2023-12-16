@@ -2,6 +2,7 @@ package com.example.competitionmanagment.service.serviceInterface;
 
 import com.example.competitionmanagment.dto.member.MemberDto;
 import com.example.competitionmanagment.entity.Member;
+import org.springframework.data.domain.Page;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,5 +20,8 @@ public interface MemberService {
     void incrementNumberOfParticipant(String code);
 
     boolean Affectation(Member member);
+
+    List<Member> fetchMemberByCompetition(String code);
+    Page<Member> MemberByCompetition(String code,int page);
 
 }

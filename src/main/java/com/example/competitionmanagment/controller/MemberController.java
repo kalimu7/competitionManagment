@@ -12,6 +12,7 @@ import com.example.competitionmanagment.util.MySpecificException;
 import com.example.competitionmanagment.util.SpecingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("member")
@@ -39,23 +41,9 @@ public class MemberController {
 
 
 
-            if(!memberService.checkdate(memberDto.competitionCode)){
-
-                throw new MySpecificException(" Inscription is closed ");
-                //return new ResponseEntity<>("inscription is closed",HttpStatus.BAD_REQUEST);
-            }
-
-            Integer memberExistResult = memberService.memberExist(memberDto);
-
-            if (!memberExistResult.equals(0)) {
-                String msg = "";
-                if (memberExistResult.equals(1)) {
-                    msg = "Member has been assigned to the competition successfully";
-                } else if (memberExistResult.equals(2)) {
-                    msg = "member is already registred";
-                }
-                throw new SpecingException(msg);
-            }
+            memberService.checkdate(memberDto.competitionCode);
+            memberService.memberExist(memberDto);
+            memberService.incrementNumberOfParticipant(memberDto.competitionCode);
 
             Member member = MemberMapper.mm.toEntity(memberDto);
             member.setAccessionDate(LocalDate.now());
@@ -67,7 +55,6 @@ public class MemberController {
             Ranking ranking = RankingMapper.RM.toEntity(rankingDto);
             rankingService.addRanking(ranking);
             return ResponseEntity.ok(member1);
-
 
     }
     @PostMapping("/ranking")
@@ -88,5 +75,29 @@ public class MemberController {
         }
         return ResponseEntity.ok(memberDtos);
     }
+
+    @GetMapping("/{code}/{page}")
+    public ResponseEntity<?> fetchMemberByCompetition(@PathVariable String code, @PathVariable int page) {
+        try {
+            Page<Member> members = memberService.MemberByCompetition(code, page);
+            List<MemberDto> memberDtos = new ArrayList<>();
+            for (Member m : members) {
+                MemberDto memberDto = MemberMapper.mm.toDto(m);
+                memberDtos.add(memberDto);
+            }
+            int totalPages = members.getTotalPages();
+
+            // Create a custom response object
+            Map<String, Object> response = new HashMap<>();
+            response.put("members", memberDtos);
+            response.put("totalPages", totalPages);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // Handle exceptions and return an appropriate response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
+    }
+
 
 }

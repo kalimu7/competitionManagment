@@ -26,6 +26,7 @@ public class Ranking {
     private Competition competition;
 
 
+
     private int rank;
     private int score;
 }

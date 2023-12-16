@@ -1,5 +1,6 @@
 package com.example.competitionmanagment.service;
 
+import com.example.competitionmanagment.Mapper.MemberMapper;
 import com.example.competitionmanagment.Mapper.RankingMapper;
 import com.example.competitionmanagment.dao.CompetitionRepository;
 import com.example.competitionmanagment.dao.MemberRepository;
@@ -12,13 +13,19 @@ import com.example.competitionmanagment.entity.RandId;
 import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
 import com.example.competitionmanagment.util.MySpecificException;
+import com.example.competitionmanagment.util.SpecingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberServiceImp implements MemberService {
@@ -40,20 +47,23 @@ public class MemberServiceImp implements MemberService {
             LocalDate LastDay = competition.get().getDate().minusDays(1);
             LocalDate currentDay = LocalDate.now();
             if(currentDay.isBefore(LastDay)){
-                return true;
+                //can be created
             }else{
-                return false;
-            }
-        }
-        return false;
+                throw new MySpecificException(" Inscription is closed ");
 
+            }
+        }else{
+            throw new MySpecificException(" No Competition has this code ");
+        }
+
+        return false;
     }
 
     @Override
     public Member addMemeber(Member member,String code) {
         competitionRepository.findByCode(code).orElseThrow(()->new MySpecificException("no competition with this code"));
 
-        this.incrementNumberOfParticipant(code);
+
         return memberRepository.save(member);
     }
 
@@ -69,11 +79,15 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public void incrementNumberOfParticipant(String code) {
-        Optional<Competition> competition = competitionRepository.findByCode(code);
-        if (competition.isPresent()){
-            Competition competition1 = competition.get();
-            competition1.setNumberOfParticipants(competition1.getNumberOfParticipants() + 1);
-            competitionRepository.save(competition1);
+        Optional <Competition> competition =  competitionRepository.findByCode(code);
+        int numberOfActualParticipant =  rankingRepository.countByCompetitionCode(code);
+        if(competition.isPresent()){
+            int numb = competition.get().getNumberOfParticipants();
+
+            if(numb <= numberOfActualParticipant){
+                throw new MySpecificException("this competition is full");
+            }
+
         }
     }
 
@@ -81,6 +95,26 @@ public class MemberServiceImp implements MemberService {
     public boolean Affectation(Member member) {
         return false;
     }
+
+    @Override
+    public List<Member> fetchMemberByCompetition(String code) {
+        Competition competition = new Competition();
+        competition.setCode(code);
+        List<Ranking> rankings = rankingRepository.findAllByCompetition(competition);
+        List<Member> members = rankings.stream()
+                .map(Ranking::getMember)
+                .toList();
+        return members;
+    }
+
+    @Override
+    public Page<Member> MemberByCompetition(String code,int page ) {
+
+        Pageable pageable = PageRequest.of(page ,6);
+        return  memberRepository.findAllMembersByCompetitionCode(code,pageable);
+
+    }
+
     @Override
     public Integer memberExist(MemberDto memberDto) {
         int res = 0;
@@ -99,11 +133,13 @@ public class MemberServiceImp implements MemberService {
                 rankingDto.membernum = member.get().getNum();
                 Ranking ranking1 = RankingMapper.RM.toEntity(rankingDto);
                 rankingRepository.save(ranking1);
-                this.incrementNumberOfParticipant(memberDto.competitionCode);
                 res = 1;
+                throw new SpecingException("Member has been assigned to the competition successfully");
 
             }else{
                 res = 2;
+                throw new SpecingException("member is already registred");
+
             }
 
         }

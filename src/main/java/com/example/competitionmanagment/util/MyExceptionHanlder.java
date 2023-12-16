@@ -1,5 +1,6 @@
 package com.example.competitionmanagment.util;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,6 +25,14 @@ public class MyExceptionHanlder {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ApiErreur> handleMySpecificException(SpecingException ex){
         return new ResponseEntity<>(new ApiErreur(200,ex.getMessage()),HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        // Customize the error message or response body as needed
+        String errorMessage = "foreingn key doesnt exist : ";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

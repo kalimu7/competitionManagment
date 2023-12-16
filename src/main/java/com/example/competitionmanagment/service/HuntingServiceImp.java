@@ -98,9 +98,7 @@ public class HuntingServiceImp implements HuntingService {
             for(HuntingDtoResponse H : huntingDtoResponses){
                 if(H.membernum == id ){
                     totalScorePerId = totalScorePerId + H.totalScoreForRaw;
-                    System.out.println(" id  " +  id + " h.id " + H.membernum);
                 }else{
-                    System.out.println(" here must not be equal id  " +  id + " h.id " + H.membernum);
                 }
                 competitionCode = H.competitioncode;
             }
