@@ -4,7 +4,7 @@ import com.example.competitionmanagment.enums.identiyDocumentType;
 
 import java.time.LocalDate;
 
-public class MemberDtoResponse {
+public class MemberDtoWinnerResponse {
 
     public String name;
     public String familyName;
@@ -13,8 +13,8 @@ public class MemberDtoResponse {
     public identiyDocumentType identity;
     public String identityNumber;
 
-    public String competitionCode;
-
     public int score;
+    public int rank;
+
 
 }

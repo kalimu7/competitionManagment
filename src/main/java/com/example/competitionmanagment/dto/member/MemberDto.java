@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 public class MemberDto {
 
-    //public int num;
+    public int num;
     @NotBlank(message = "name shouldnt be blank")
     public String name;
     @NotBlank(message = "fmailyname shouldnt be blank")

@@ -9,6 +9,6 @@ public interface RankingService {
    Ranking addRanking(Ranking ranking);
    boolean calcule(String code);
 
-   List<RankingService> affichage(String code);
+   List<Ranking> FetchWinners(String code);
 
 }

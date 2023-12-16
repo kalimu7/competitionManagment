@@ -1,21 +1,20 @@
 package com.example.competitionmanagment.controller;
 
+import com.example.competitionmanagment.Mapper.MemberDtoResponseMapper;
 import com.example.competitionmanagment.Mapper.MemberMapper;
 import com.example.competitionmanagment.Mapper.RankingMapper;
 import com.example.competitionmanagment.dto.member.MemberDto;
+import com.example.competitionmanagment.dto.member.MemberDtoWinnerResponse;
 import com.example.competitionmanagment.dto.ranking.RankingDto;
 import com.example.competitionmanagment.entity.Member;
 import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
 import com.example.competitionmanagment.service.serviceInterface.RankingService;
-import com.example.competitionmanagment.util.MySpecificException;
-import com.example.competitionmanagment.util.SpecingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -97,6 +96,20 @@ public class MemberController {
             // Handle exceptions and return an appropriate response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
+    }
+
+    @GetMapping("/winners/{code}")
+    public ResponseEntity fetchWinners(@PathVariable String code){
+        
+        List<Ranking> rankings = rankingService.FetchWinners(code);
+        List<MemberDtoWinnerResponse> memberDtos = new ArrayList<>();
+        for(Ranking R : rankings){
+            MemberDtoWinnerResponse  memberDto = MemberDtoResponseMapper.MDRM.toDto(R.getMember());
+            memberDto.score = R.getScore();
+            memberDto.rank = R.getRank();
+            memberDtos.add(memberDto);
+        }
+        return ResponseEntity.ok(memberDtos);
     }
 
 

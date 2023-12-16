@@ -8,6 +8,7 @@ import com.example.competitionmanagment.service.serviceInterface.FishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +17,7 @@ public class FishServiceImp implements FishService {
 
     @Autowired
     private FishRepository fishRepository;
+
 
 
 
@@ -44,5 +46,10 @@ public class FishServiceImp implements FishService {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<Fish> FetchFish() {
+        return fishRepository.findAll();
     }
 }

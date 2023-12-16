@@ -15,6 +15,13 @@ public interface RankingRepository extends JpaRepository<Ranking, RandId> {
 
     List<Ranking> findAllByCompetition(Competition competition);
 
+    @Query("SELECT r from Ranking  r WHERE r.competition = :competition ORDER BY r.score DESC")
+    List<Ranking> findWinners(@Param("competition") Competition competition);
+
+
+
     @Query("SELECT COUNT(r) FROM Ranking r WHERE r.competition.code = :competitionCode")
     int countByCompetitionCode(@Param("competitionCode") String competitionCode);
+
+
 }

@@ -2,6 +2,7 @@ package com.example.competitionmanagment.service.serviceInterface;
 
 import com.example.competitionmanagment.entity.Fish;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FishService {
@@ -10,6 +11,6 @@ public interface FishService {
 
     boolean checkFishWeight(String fishname,float weight);
 
-
+    List<Fish> FetchFish();
 
 }

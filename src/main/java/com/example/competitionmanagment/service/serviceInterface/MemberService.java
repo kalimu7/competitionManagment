@@ -24,4 +24,5 @@ public interface MemberService {
     List<Member> fetchMemberByCompetition(String code);
     Page<Member> MemberByCompetition(String code,int page);
 
+
 }
