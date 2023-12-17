@@ -4,6 +4,7 @@ import com.example.competitionmanagment.dao.CompetitionRepository;
 import com.example.competitionmanagment.dao.RankingRepository;
 import com.example.competitionmanagment.entity.Competition;
 import com.example.competitionmanagment.entity.Ranking;
+import com.example.competitionmanagment.service.serviceInterface.HuntingService;
 import com.example.competitionmanagment.service.serviceInterface.RankingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,9 @@ public class RankingServiceImp implements RankingService {
 
     @Autowired
     private RankingRepository rankingRepository;
+
+    @Autowired
+    private HuntingService huntingService;
 
     @Override
     public Ranking addRanking(Ranking ranking) {
@@ -28,6 +32,7 @@ public class RankingServiceImp implements RankingService {
 
     @Override
     public List<Ranking> FetchWinners(String code) {
+        //huntingService.calulateScore(code);
         Competition competition = new Competition();
         competition.setCode(code);
         return rankingRepository.findWinners(competition);
