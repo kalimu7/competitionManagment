@@ -82,13 +82,9 @@ public class HuntingController {
     @GetMapping("/huntings")
     public ResponseEntity fetchHunting(@RequestParam String code){
 
-
             List<Ranking> rankings = huntingService.calulateScore(code);
 
-
             return ResponseEntity.ok(rankings);
-
-
 
     }
 
