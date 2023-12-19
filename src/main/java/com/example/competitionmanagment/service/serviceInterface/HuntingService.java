@@ -15,6 +15,11 @@ public interface HuntingService {
     List<Hunting> fetchHunting(String code);
     List<Integer> iddd(String code);
 
-     List<Ranking> calulateScore(String competitionCode);
+    List<Ranking> calulateScore(String competitionCode);
+
+    List<Ranking> calculateScoreWithoutSaving(String CompetitionCode);
+
+    public List<Ranking> saveScores(List<Ranking> rankings) ;
+
 
 }

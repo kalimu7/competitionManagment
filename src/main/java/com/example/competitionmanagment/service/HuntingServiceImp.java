@@ -65,7 +65,6 @@ public class HuntingServiceImp implements HuntingService {
 
     @Override
     public Hunting searchHuntingByHunting(String code) {
-
         return null;
     }
 
@@ -113,7 +112,9 @@ public class HuntingServiceImp implements HuntingService {
             rankings.add(ranking);
 
         }
+
         rankings.sort(Comparator.comparingInt(Ranking::getScore).reversed());
+
         for (int i = 0; i < rankings.size(); i++) {
             rankings.get(i).setRank(i + 1);
         }
@@ -121,7 +122,61 @@ public class HuntingServiceImp implements HuntingService {
         rankingRepository.saveAll(rankings);
 
         return rankings;
+        
+        
+        
+        
     }
+
+
+    
+
+    @Override
+    public List<Ranking> calculateScoreWithoutSaving(String CompetitionCode) {
+        List<Ranking> rankings = new ArrayList<>();
+        List<Integer> members = iddd(CompetitionCode);
+        List<Hunting> huntings = fetchHunting(CompetitionCode);
+        List<HuntingDtoResponse> huntingDtoResponses = new ArrayList<>();
+
+        for (Hunting h : huntings) {
+            HuntingDtoResponse huntingDtoResponse = HuntingResponseMapper.HRM.toDto(h);
+            huntingDtoResponse.totalScoreForRaw = huntingDtoResponse.fishScore * huntingDtoResponse.numberOfFish;
+            huntingDtoResponses.add(huntingDtoResponse);
+        }
+
+        for (Integer id : members) {
+            String competitionCodeForMember = "";
+            int totalScorePerId = 0;
+            for (HuntingDtoResponse h : huntingDtoResponses) {
+                if (h.membernum == id) {
+                    totalScorePerId += h.totalScoreForRaw;
+                }
+                competitionCodeForMember = h.competitioncode;
+            }
+
+            Ranking ranking = new Ranking();
+            ranking.setScore(totalScorePerId);
+            RandId randId = new RandId();
+            randId.setMembernum(id);
+            randId.setCompetitoncode(competitionCodeForMember);
+            ranking.setId(randId);
+
+            rankings.add(ranking);
+        }
+
+        rankings.sort(Comparator.comparingInt(Ranking::getScore).reversed());
+        for (int i = 0; i < rankings.size(); i++) {
+            rankings.get(i).setRank(i + 1);
+        }
+
+        return rankings;
+    }
+
+    @Override
+    public List<Ranking> saveScores(List<Ranking> rankings) {
+        return rankingRepository.saveAll(rankings);
+    }
+
 
     @Override
     public List<Integer> iddd(String code) {
