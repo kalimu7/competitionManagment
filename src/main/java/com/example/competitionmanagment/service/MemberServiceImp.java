@@ -5,6 +5,7 @@ import com.example.competitionmanagment.Mapper.RankingMapper;
 import com.example.competitionmanagment.dao.CompetitionRepository;
 import com.example.competitionmanagment.dao.MemberRepository;
 import com.example.competitionmanagment.dao.RankingRepository;
+import com.example.competitionmanagment.dto.member.MemberAssignDto;
 import com.example.competitionmanagment.dto.member.MemberDto;
 import com.example.competitionmanagment.dto.ranking.RankingDto;
 import com.example.competitionmanagment.entity.Competition;
@@ -112,6 +113,14 @@ public class MemberServiceImp implements MemberService {
 
     }
 
+    @Override
+    public MemberAssignDto Assign(MemberAssignDto memberAssignDto) {
+
+
+        return null;
+
+
+    }
 
 
     @Override

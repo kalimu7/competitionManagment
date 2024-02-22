@@ -11,6 +11,7 @@ import com.example.competitionmanagment.util.MySpecificException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,10 +37,16 @@ public class HuntingServiceImp implements HuntingService {
 
     @Override
     public Hunting addHunting(Hunting hunting) {
-        memberRepository.findByNum(hunting.getMember().getNum()).orElseThrow(()-> new MySpecificException("member id not found"));
-        competitionRepository.findByCode(hunting.getCompetition().getCode()).orElseThrow(()->new MySpecificException("compettion not found"));
-        fishRepository.findByName(hunting.getFish().getName()).orElseThrow(()->new MySpecificException("fish name is not available"));
 
+        memberRepository.findByNum(hunting.getMember().getNum()).orElseThrow(()-> new MySpecificException("member id not found"));
+        Competition competition =  competitionRepository.findByCode(hunting.getCompetition().getCode()).orElseThrow(()->new MySpecificException("compettion not found"));
+        fishRepository.findByName(hunting.getFish().getName()).orElseThrow(()->new MySpecificException("fish name is not available"));
+        //here im checking if the today date is the exactly the date of competition
+        LocalDate todayDate = LocalDate.now();
+        System.out.println("here im checking the date value " +  todayDate);
+        if(!competition.getDate().equals(todayDate) ){
+            throw new MySpecificException("date isnt valide !!");
+        }
         HuntingDto huntingDto = searchHunting(hunting.getMember().getNum(),hunting.getFish().getName());
 
         if(huntingDto == null){

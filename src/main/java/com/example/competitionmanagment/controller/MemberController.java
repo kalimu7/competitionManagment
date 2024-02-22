@@ -3,6 +3,7 @@ package com.example.competitionmanagment.controller;
 import com.example.competitionmanagment.Mapper.MemberDtoResponseMapper;
 import com.example.competitionmanagment.Mapper.MemberMapper;
 import com.example.competitionmanagment.Mapper.RankingMapper;
+import com.example.competitionmanagment.dto.member.MemberAssignDto;
 import com.example.competitionmanagment.dto.member.MemberDto;
 import com.example.competitionmanagment.dto.member.MemberDtoWinnerResponse;
 import com.example.competitionmanagment.dto.ranking.RankingDto;
@@ -38,8 +39,6 @@ public class MemberController {
     public ResponseEntity create(@Valid @RequestBody MemberDto memberDto) {
 
 
-
-
             memberService.checkdate(memberDto.competitionCode);
             memberService.memberExist(memberDto);
             memberService.incrementNumberOfParticipant(memberDto.competitionCode);
@@ -54,6 +53,16 @@ public class MemberController {
             Ranking ranking = RankingMapper.RM.toEntity(rankingDto);
             rankingService.addRanking(ranking);
             return ResponseEntity.ok(member1);
+
+
+    }
+
+    @PostMapping("/assing")
+    public ResponseEntity assign(@RequestBody MemberAssignDto memberAssignDto){
+
+
+
+        return null;
 
     }
     @PostMapping("/ranking")

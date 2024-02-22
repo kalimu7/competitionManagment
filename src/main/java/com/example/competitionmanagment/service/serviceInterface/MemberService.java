@@ -1,5 +1,6 @@
 package com.example.competitionmanagment.service.serviceInterface;
 
+import com.example.competitionmanagment.dto.member.MemberAssignDto;
 import com.example.competitionmanagment.dto.member.MemberDto;
 import com.example.competitionmanagment.entity.Member;
 import org.springframework.data.domain.Page;
@@ -24,5 +25,6 @@ public interface MemberService {
     List<Member> fetchMemberByCompetition(String code);
     Page<Member> MemberByCompetition(String code,int page);
 
+    MemberAssignDto Assign(MemberAssignDto memberAssignDto);
 
 }

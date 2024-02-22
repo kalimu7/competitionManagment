@@ -21,7 +21,7 @@ public class Ranking {
     @JoinColumn(name = "memeberNum",insertable = false,updatable = false)
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "competitionCode",insertable = false,updatable = false)
     private Competition competition;
 

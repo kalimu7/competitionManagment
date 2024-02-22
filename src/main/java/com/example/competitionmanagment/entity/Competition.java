@@ -33,10 +33,10 @@ public class Competition {
     @Positive(message = "the amout must be positive please")
     private float amount;
 
-    @ManyToMany(mappedBy = "competitions")
+    @ManyToMany(mappedBy = "competitions",cascade = CascadeType.MERGE)
     private List<Member> members;
 
-    @OneToMany(mappedBy = "competition")
+    @OneToMany(mappedBy = "competition",cascade = CascadeType.MERGE)
     private List<Hunting> huntings;
 
 }

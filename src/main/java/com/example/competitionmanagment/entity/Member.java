@@ -2,6 +2,7 @@ package com.example.competitionmanagment.entity;
 
 
 
+import com.example.competitionmanagment.dto.member.MemberAssignDto;
 import com.example.competitionmanagment.enums.identiyDocumentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -25,6 +26,7 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+
     private int num;
     private String name;
     private String familyName;
@@ -34,6 +36,10 @@ public class Member {
     private identiyDocumentType identity;
     @Column(unique = true)
     private String identityNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "memberid",referencedColumnName = "num")
+    private UserInfoEntity userInfoEntity;
 
     @ManyToMany
     @JoinTable(
