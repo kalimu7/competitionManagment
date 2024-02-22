@@ -14,12 +14,12 @@ public interface HuntingMapper {
 
 
     @Mapping(target = "id",source = "id")
-    @Mapping(target = "membernum",source = "member.num")
+    @Mapping(target = "membernum",source = "user.num")
     @Mapping(target = "competitioncode",source = "competition.code")
     @Mapping(target = "fishname",source = "fish.name")
     HuntingDto toDto(Hunting hunting);
 
-    @Mapping(target = "member.num",source = "membernum")
+    @Mapping(target = "user.num",source = "membernum")
     @Mapping(target = "competition.code",source = "competitioncode")
     @Mapping(target = "fish.name",source = "fishname")
     Hunting toEntity(HuntingDto huntingDto);

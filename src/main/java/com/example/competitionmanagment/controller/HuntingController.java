@@ -44,6 +44,7 @@ public class HuntingController {
             Hunting hunting = HuntingMapper.HM.toEntity(huntingDto);
             Hunting hunting1 = huntingService.addHunting(hunting);
             HuntingDto huntingDto1 = HuntingMapper.HM.toDto(hunting1);
+
             return ResponseEntity.ok(huntingDto1);
 
     }

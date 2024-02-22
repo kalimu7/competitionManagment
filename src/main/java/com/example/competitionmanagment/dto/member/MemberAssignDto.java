@@ -5,9 +5,7 @@ import lombok.Data;
 @Data
 public class MemberAssignDto {
 
-    private int num;
+    private String Identity;
     private String code;
-
-
 
 }

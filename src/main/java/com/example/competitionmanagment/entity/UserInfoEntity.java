@@ -30,8 +30,7 @@ public class UserInfoEntity {
     @Enumerated(EnumType.STRING)
     private Roles role;
 
-    @OneToMany
-    private List<UserInfoEntity> userInfoEntities;
+
 
 
 }

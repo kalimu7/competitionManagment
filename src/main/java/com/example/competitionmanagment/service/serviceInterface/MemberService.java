@@ -2,10 +2,10 @@ package com.example.competitionmanagment.service.serviceInterface;
 
 import com.example.competitionmanagment.dto.member.MemberAssignDto;
 import com.example.competitionmanagment.dto.member.MemberDto;
-import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.dto.ranking.RankingDto;
+import com.example.competitionmanagment.entity.User;
 import org.springframework.data.domain.Page;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface MemberService {
@@ -14,17 +14,17 @@ public interface MemberService {
 
     boolean checkdate(String code);
 
-    Member addMemeber(Member member,String code);
+    User addMemeber(User user, String code);
 
-    List<Member> searchMember(String name);
+    List<User> searchMember(String name);
 
     void incrementNumberOfParticipant(String code);
 
-    boolean Affectation(Member member);
+    boolean Affectation(User user);
 
-    List<Member> fetchMemberByCompetition(String code);
-    Page<Member> MemberByCompetition(String code,int page);
+    List<User> fetchMemberByCompetition(String code);
+    Page<User> MemberByCompetition(String code, int page);
 
-    MemberAssignDto Assign(MemberAssignDto memberAssignDto);
+    RankingDto Assign(MemberAssignDto memberAssignDto);
 
 }

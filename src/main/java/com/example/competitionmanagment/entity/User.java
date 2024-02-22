@@ -2,18 +2,13 @@ package com.example.competitionmanagment.entity;
 
 
 
-import com.example.competitionmanagment.dto.member.MemberAssignDto;
-import com.example.competitionmanagment.enums.identiyDocumentType;
+import com.example.competitionmanagment.enums.Roles;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 
@@ -21,25 +16,36 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="Member")
-public class Member {
+@Table(name = "user_accounts")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-
     private int num;
     private String name;
     private String familyName;
     private LocalDate accessionDate;
-    private String nationality ;
+    private String password;
+    @Column(unique = true)
+    private String email;
+    @Column
     @Enumerated(EnumType.STRING)
-    private identiyDocumentType identity;
+    private Roles role;
     @Column(unique = true)
     private String identityNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "memberid",referencedColumnName = "num")
-    private UserInfoEntity userInfoEntity;
+//    private int num;
+//    private String name;
+//    private String familyName;
+//    private LocalDate accessionDate;
+//    private String nationality ;
+//    @Enumerated(EnumType.STRING)
+//    private identiyDocumentType identity;
+//    @Column(unique = true)
+//    private String identityNumber;
+
+
+
 
     @ManyToMany
     @JoinTable(
@@ -49,7 +55,7 @@ public class Member {
     )
     private List<Competition> competitions;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "user")
     private List<Hunting> huntings;
 
 

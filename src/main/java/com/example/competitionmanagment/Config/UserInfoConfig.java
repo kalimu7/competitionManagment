@@ -1,5 +1,6 @@
 package com.example.competitionmanagment.Config;
 
+import com.example.competitionmanagment.entity.User;
 import com.example.competitionmanagment.entity.UserInfoEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,12 +14,12 @@ import java.util.Collection;
 
 public class UserInfoConfig implements UserDetails {
 
-    private final UserInfoEntity userInfoEntity;
+    private final User user;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
 
-        return Arrays.stream(userInfoEntity.getRole().toString()
+        return Arrays.stream(user.getRole().toString()
                         .split(","))
                 .map(SimpleGrantedAuthority::new)
                 .toList();
@@ -26,12 +27,12 @@ public class UserInfoConfig implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userInfoEntity.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userInfoEntity.getEmail();
+        return user.getEmail();
     }
 
 

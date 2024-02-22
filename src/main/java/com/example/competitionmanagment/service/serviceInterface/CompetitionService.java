@@ -1,7 +1,7 @@
 package com.example.competitionmanagment.service.serviceInterface;
 
 import com.example.competitionmanagment.entity.Competition;
-import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.entity.User;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface CompetitionService {
     List<Competition> selectCompetitionFilter(String filter);
 
 
-    List<Member> displayMemebersOfCompetition(String code);
+    List<User> displayMemebersOfCompetition(String code);
 
 
 }

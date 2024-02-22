@@ -1,15 +1,15 @@
 package com.example.competitionmanagment.service;
 
-import com.example.competitionmanagment.Mapper.MemberMapper;
 import com.example.competitionmanagment.Mapper.RankingMapper;
 import com.example.competitionmanagment.dao.CompetitionRepository;
 import com.example.competitionmanagment.dao.MemberRepository;
 import com.example.competitionmanagment.dao.RankingRepository;
+import com.example.competitionmanagment.dao.UserInfoRepo;
 import com.example.competitionmanagment.dto.member.MemberAssignDto;
 import com.example.competitionmanagment.dto.member.MemberDto;
 import com.example.competitionmanagment.dto.ranking.RankingDto;
 import com.example.competitionmanagment.entity.Competition;
-import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.entity.User;
 import com.example.competitionmanagment.entity.RandId;
 import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class MemberServiceImp implements MemberService {
@@ -35,6 +34,9 @@ public class MemberServiceImp implements MemberService {
 
     @Autowired
     private RankingRepository rankingRepository;
+
+    @Autowired
+    private UserInfoRepo userInfoRepo;
 
 
     @Override
@@ -58,17 +60,17 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public Member addMemeber(Member member,String code) {
+    public User addMemeber(User user, String code) {
         competitionRepository.findByCode(code).orElseThrow(()->new MySpecificException("no competition with this code"));
 
 
-        return memberRepository.save(member);
+        return memberRepository.save(user);
     }
 
 
 
     @Override
-    public List<Member> searchMember(String name) {
+    public List<User> searchMember(String name) {
 
         return memberRepository.findMemberByNameOrFamilyNameOrIdentityNumber(name,name,name);
 
@@ -90,23 +92,23 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public boolean Affectation(Member member) {
+    public boolean Affectation(User user) {
         return false;
     }
 
     @Override
-    public List<Member> fetchMemberByCompetition(String code) {
+    public List<User> fetchMemberByCompetition(String code) {
         Competition competition = new Competition();
         competition.setCode(code);
         List<Ranking> rankings = rankingRepository.findAllByCompetition(competition);
-        List<Member> members = rankings.stream()
-                .map(Ranking::getMember)
+        List<User> users = rankings.stream()
+                .map(Ranking::getUser)
                 .toList();
-        return members;
+        return users;
     }
 
     @Override
-    public Page<Member> MemberByCompetition(String code,int page ) {
+    public Page<User> MemberByCompetition(String code, int page ) {
 
         Pageable pageable = PageRequest.of(page ,6);
         return  memberRepository.findAllMembersByCompetitionCode(code,pageable);
@@ -114,10 +116,23 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public MemberAssignDto Assign(MemberAssignDto memberAssignDto) {
+    public RankingDto Assign(MemberAssignDto memberAssignDto) {
 
+        Competition competition =  competitionRepository.findByCode(memberAssignDto.getCode()).orElseThrow( ()->  new MySpecificException("no competition with this coce"));
+        User user = userInfoRepo.findByIdentityNumber(memberAssignDto.getIdentity()).orElseThrow(() -> new MySpecificException("no member with this id") );
 
-        return null;
+        Ranking ranking = new Ranking();
+        ranking.setRank(0);
+        ranking.setScore(0);
+        ranking.setCompetition(competition);
+        ranking.setUser(user);
+        RandId randId = new RandId();
+        randId.setMembernum(user.getNum());
+        randId.setCompetitoncode(competition.getCode());
+        ranking.setId(randId);
+        Ranking ranking1 = rankingRepository.save(ranking);
+        RankingDto rankingDto = RankingMapper.RM.toDto(ranking1);
+        return rankingDto;
 
 
     }
@@ -126,7 +141,7 @@ public class MemberServiceImp implements MemberService {
     @Override
     public Integer memberExist(MemberDto memberDto) {
         int res = 0;
-        Optional<Member> member =  memberRepository.findByIdentityNumber(memberDto.identityNumber);
+        Optional<User> member =  memberRepository.findByIdentityNumber(memberDto.identityNumber);
 
         if(member.isPresent()){
 

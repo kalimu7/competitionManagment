@@ -15,7 +15,8 @@ public interface RankingMapper {
 
     RankingMapper RM = Mappers.getMapper(RankingMapper.class);
 
-
+    @Mapping(target = "competitoncode",source = "id.competitoncode")
+    @Mapping(target = "membernum",source = "id.membernum")
     RankingDto toDto(Ranking ranking);
     @Mapping(target = "id.competitoncode",source = "competitoncode")
     @Mapping(target = "id.membernum",source = "membernum")

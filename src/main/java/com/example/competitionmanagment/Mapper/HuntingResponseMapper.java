@@ -14,7 +14,7 @@ public interface HuntingResponseMapper {
     @Mapping(target = "fishScore",source = "fish.level.points")
     @Mapping(target = "fishname",source = "fish.name")
     @Mapping(target = "competitioncode",source = "competition.code")
-    @Mapping(target = "membernum",source = "member.num")
+    @Mapping(target = "membernum",source = "user.num")
     HuntingDtoResponse toDto(Hunting hunting);
     Hunting toEntity(HuntingDtoResponse huntingDtoResponse);
 }

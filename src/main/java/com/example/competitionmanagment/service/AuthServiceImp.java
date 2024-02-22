@@ -5,6 +5,7 @@ import com.example.competitionmanagment.Mapper.UserMapper;
 import com.example.competitionmanagment.dao.UserInfoRepo;
 import com.example.competitionmanagment.dto.user.UserLogin;
 import com.example.competitionmanagment.dto.user.UserDto;
+import com.example.competitionmanagment.entity.User;
 import com.example.competitionmanagment.entity.UserInfoEntity;
 import com.example.competitionmanagment.service.serviceInterface.AuthService;
 import com.example.competitionmanagment.util.JWTUtils;
@@ -43,14 +44,14 @@ public class AuthServiceImp implements AuthService {
 
         userDto.setPassword(hpw);
 
-        UserInfoEntity userInfoEntity  = UserMapper.UMI.toEntity(userDto);
+        User user  = UserMapper.UMI.toEntity(userDto);
 
-        if(userInfoEntity.getRole().toString().equals("Adherent")){
+        if(user.getRole().toString().equals("Adherent")){
             LocalDate todayDate = LocalDate.now();
-            userInfoEntity.setAccessionDate(todayDate);
+            user.setAccessionDate(todayDate);
         }
 
-        UserInfoEntity userInfo2 = userInfoRepo.save(userInfoEntity);
+        User userInfo2 = userInfoRepo.save(user);
         UserDto userDto1 = UserMapper.UMI.toDto(userInfo2);
         return userDto1;
 
@@ -62,7 +63,7 @@ public class AuthServiceImp implements AuthService {
         var userInfoEntity = userInfoManagerConfig.loadUserByUsername(requestLogin.getEmail());
         System.out.println("the user " + userInfoEntity);
         String jwt =  jwtUtils.GenerateToken(userInfoEntity);
-        Optional<UserInfoEntity> userInfo = userInfoRepo.findByEmail(requestLogin.getEmail());
+        Optional<User> userInfo = userInfoRepo.findByEmail(requestLogin.getEmail());
         int Id =  userInfo.get().getNum();
         var refreshToken = jwtUtils.GenerateRefreshToken(new HashMap<>(),userInfoEntity);
         UserLogin reqRes = new UserLogin();

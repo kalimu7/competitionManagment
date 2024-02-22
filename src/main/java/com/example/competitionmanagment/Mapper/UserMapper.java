@@ -1,6 +1,7 @@
 package com.example.competitionmanagment.Mapper;
 
 import com.example.competitionmanagment.dto.user.UserDto;
+import com.example.competitionmanagment.entity.User;
 import com.example.competitionmanagment.entity.UserInfoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -10,9 +11,9 @@ public interface UserMapper {
 
     UserMapper UMI = Mappers.getMapper(UserMapper.class);
 
-    UserDto toDto(UserInfoEntity userInfoEntity);
+    UserDto toDto(User user);
 
-    UserInfoEntity toEntity(UserDto userDto);
+    User toEntity(UserDto userDto);
 
 
 }

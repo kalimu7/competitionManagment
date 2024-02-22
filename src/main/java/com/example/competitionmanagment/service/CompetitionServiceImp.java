@@ -2,7 +2,7 @@ package com.example.competitionmanagment.service;
 
 import com.example.competitionmanagment.dao.CompetitionRepository;
 import com.example.competitionmanagment.entity.Competition;
-import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.entity.User;
 import com.example.competitionmanagment.service.serviceInterface.CompetitionService;
 import com.example.competitionmanagment.util.MySpecificException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class CompetitionServiceImp implements CompetitionService {
 
 
     @Override
-    public List<Member> displayMemebersOfCompetition(String code) {
+    public List<User> displayMemebersOfCompetition(String code) {
         return null;
     }
 }
