@@ -31,7 +31,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/api/**","/admin/**").permitAll()
                         .requestMatchers("/member/**").hasAnyAuthority("Jury","Manager","Adherent")
-                        .requestMatchers("/competition/**").hasAnyAuthority("Jury","Manager")
+                        .requestMatchers("/competition/**").hasAnyAuthority("Jury","Manager","Adherent")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

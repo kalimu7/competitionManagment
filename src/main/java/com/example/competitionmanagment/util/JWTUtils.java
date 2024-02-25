@@ -1,5 +1,6 @@
 package com.example.competitionmanagment.util;
 
+import com.example.competitionmanagment.Config.UserInfoConfig;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -27,14 +28,35 @@ public class JWTUtils {
 
 
     public String GenerateToken(UserDetails userDetails){
+        if(userDetails instanceof UserInfoConfig){
+            UserInfoConfig userInfoConfig = (UserInfoConfig) userDetails;
+
+
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + Experition_time))
                 .claim("roles",userDetails.getAuthorities().toString())
+                .claim("userid",userInfoConfig.getUserid())
+                .signWith(key)
+                .compact();
+        }else{
+            throw new MySpecificException("error heppned cannot cast some types");
+        }
+    }
+    /*
+    public String GenerateToken(UserDetails userDetails){
+        return Jwts.builder()
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + Experition_time))
+                .claim("roles",userDetails.getAuthorities().toString())
+                //.claims("userId",userDetails)
                 .signWith(key)
                 .compact();
     }
+
+    */
     public String GenerateRefreshToken(HashMap<String,Object> claims, UserDetails userDetails){
         return Jwts.builder()
                 .claims(claims)

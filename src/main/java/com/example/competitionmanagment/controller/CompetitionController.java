@@ -61,11 +61,11 @@ public class CompetitionController {
     }
 
 
-    @PreAuthorize("hasRole('Adherent')")
+
     @GetMapping("member/{memberNum}")
     public ResponseEntity fetchCompetitionMember(@PathVariable Integer memberNum){
 
-        List<String> competitions = competitionServiceImp.SelectCompetitionMembers(memberNum);
+        List<Competitiondto> competitions = competitionServiceImp.SelectCompetitionMembers(memberNum);
         return ResponseEntity.ok(competitions);
 
     }

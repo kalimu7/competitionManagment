@@ -15,6 +15,7 @@ import java.util.Collection;
 public class UserInfoConfig implements UserDetails {
 
     private final User user;
+    private int userid;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -25,6 +26,9 @@ public class UserInfoConfig implements UserDetails {
                 .toList();
     }
 
+    public int getUserid(){
+        return this.userid = user.getNum();
+    }
     @Override
     public String getPassword() {
         return user.getPassword();
