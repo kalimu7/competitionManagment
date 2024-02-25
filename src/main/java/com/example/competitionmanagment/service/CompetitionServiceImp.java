@@ -1,6 +1,7 @@
 package com.example.competitionmanagment.service;
 
 import com.example.competitionmanagment.dao.CompetitionRepository;
+import com.example.competitionmanagment.dao.RankingRepository;
 import com.example.competitionmanagment.entity.Competition;
 import com.example.competitionmanagment.entity.User;
 import com.example.competitionmanagment.service.serviceInterface.CompetitionService;
@@ -20,6 +21,13 @@ public class CompetitionServiceImp implements CompetitionService {
 
     @Autowired
     private CompetitionRepository competitionRepository;
+
+    @Autowired
+    private final RankingRepository rankingRepository;
+
+    public CompetitionServiceImp(RankingRepository rankingRepository) {
+        this.rankingRepository = rankingRepository;
+    }
 
     //todo:condition of 24 hours before subscibing//done
     @Override
@@ -56,7 +64,14 @@ public class CompetitionServiceImp implements CompetitionService {
         return competitions;
     }
 
+    @Override
+    public List<String> SelectCompetitionMembers(int memberNum) {
 
+        List<String> competitions =  rankingRepository.findCompetitionForMember(memberNum);
+        return competitions;
+
+
+    }
 
 
     @Override

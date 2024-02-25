@@ -14,6 +14,7 @@ public interface CompetitionService {
 
     List<Competition> selectCompetitionFilter(String filter);
 
+    List<String> SelectCompetitionMembers(int memberNum);
 
     List<User> displayMemebersOfCompetition(String code);
 

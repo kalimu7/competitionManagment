@@ -29,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/api/**").permitAll()
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/api/**","/admin/**").permitAll()
                         .requestMatchers("/member/**").hasAnyAuthority("Jury","Manager","Adherent")
                         .requestMatchers("/competition/**").hasAnyAuthority("Jury","Manager")
                         .anyRequest().authenticated())
