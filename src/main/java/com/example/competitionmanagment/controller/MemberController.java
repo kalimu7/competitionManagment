@@ -3,10 +3,11 @@ package com.example.competitionmanagment.controller;
 import com.example.competitionmanagment.Mapper.MemberDtoResponseMapper;
 import com.example.competitionmanagment.Mapper.MemberMapper;
 import com.example.competitionmanagment.Mapper.RankingMapper;
+import com.example.competitionmanagment.dto.member.MemberAssignDto;
 import com.example.competitionmanagment.dto.member.MemberDto;
 import com.example.competitionmanagment.dto.member.MemberDtoWinnerResponse;
 import com.example.competitionmanagment.dto.ranking.RankingDto;
-import com.example.competitionmanagment.entity.Member;
+import com.example.competitionmanagment.entity.User;
 import com.example.competitionmanagment.entity.Ranking;
 import com.example.competitionmanagment.service.serviceInterface.MemberService;
 import com.example.competitionmanagment.service.serviceInterface.RankingService;
@@ -38,22 +39,30 @@ public class MemberController {
     public ResponseEntity create(@Valid @RequestBody MemberDto memberDto) {
 
 
-
-
             memberService.checkdate(memberDto.competitionCode);
             memberService.memberExist(memberDto);
             memberService.incrementNumberOfParticipant(memberDto.competitionCode);
 
-            Member member = MemberMapper.mm.toEntity(memberDto);
-            member.setAccessionDate(LocalDate.now());
-            Member member1 = memberService.addMemeber(member,memberDto.competitionCode);
+            User user = MemberMapper.mm.toEntity(memberDto);
+            user.setAccessionDate(LocalDate.now());
+            User user1 = memberService.addMemeber(user,memberDto.competitionCode);
             //add an instance to the Ranking
             RankingDto rankingDto = new RankingDto();
             rankingDto.competitoncode = memberDto.competitionCode;
-            rankingDto.membernum = member1.getNum();
+            rankingDto.membernum = user1.getNum();
             Ranking ranking = RankingMapper.RM.toEntity(rankingDto);
             rankingService.addRanking(ranking);
-            return ResponseEntity.ok(member1);
+            return ResponseEntity.ok(user1);
+
+
+    }
+
+    @PostMapping("/assing")
+    public ResponseEntity assign(@RequestBody MemberAssignDto memberAssignDto){
+
+
+        return ResponseEntity.ok(memberService.Assign(memberAssignDto));
+
 
     }
     @PostMapping("/ranking")
@@ -66,9 +75,9 @@ public class MemberController {
 
     @PostMapping("/{keyword}")
     public ResponseEntity search(@PathVariable String keyword ){
-        List<Member> members = memberService.searchMember(keyword);
+        List<User> users = memberService.searchMember(keyword);
         List<MemberDto> memberDtos = new ArrayList<>();
-        for(Member M : members){
+        for(User M : users){
             MemberDto memberDto = MemberMapper.mm.toDto(M);
             memberDtos.add(memberDto);
         }
@@ -78,9 +87,9 @@ public class MemberController {
     @GetMapping("/{code}/{page}")
     public ResponseEntity<?> fetchMemberByCompetition(@PathVariable String code, @PathVariable int page) {
         try {
-            Page<Member> members = memberService.MemberByCompetition(code, page);
+            Page<User> members = memberService.MemberByCompetition(code, page);
             List<MemberDto> memberDtos = new ArrayList<>();
-            for (Member m : members) {
+            for (User m : members) {
                 MemberDto memberDto = MemberMapper.mm.toDto(m);
                 memberDtos.add(memberDto);
             }
@@ -104,13 +113,15 @@ public class MemberController {
         List<Ranking> rankings = rankingService.FetchWinners(code);
         List<MemberDtoWinnerResponse> memberDtos = new ArrayList<>();
         for(Ranking R : rankings){
-            MemberDtoWinnerResponse  memberDto = MemberDtoResponseMapper.MDRM.toDto(R.getMember());
+            MemberDtoWinnerResponse  memberDto = MemberDtoResponseMapper.MDRM.toDto(R.getUser());
             memberDto.score = R.getScore();
             memberDto.rank = R.getRank();
             memberDtos.add(memberDto);
         }
         return ResponseEntity.ok(memberDtos);
     }
+
+
 
 
 }

@@ -1,6 +1,5 @@
 package com.example.competitionmanagment.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -8,10 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 
@@ -33,10 +30,10 @@ public class Competition {
     @Positive(message = "the amout must be positive please")
     private float amount;
 
-    @ManyToMany(mappedBy = "competitions")
-    private List<Member> members;
+    @ManyToMany(mappedBy = "competitions",cascade = CascadeType.MERGE)
+    private List<User> users;
 
-    @OneToMany(mappedBy = "competition")
+    @OneToMany(mappedBy = "competition",cascade = CascadeType.MERGE)
     private List<Hunting> huntings;
 
 }

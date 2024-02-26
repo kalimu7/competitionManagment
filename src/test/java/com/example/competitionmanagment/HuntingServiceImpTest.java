@@ -48,9 +48,9 @@ class HuntingServiceImpTest {
 
         memberRepository.findById(memberId1);
 
-        Optional<Member> member1 = memberRepository.findById(memberId1);
-        Optional<Member> member2 = memberRepository.findById(memberId2);
-        Optional<Member> member3 = memberRepository.findById(memberId3);
+        Optional<User> member1 = memberRepository.findById(memberId1);
+        Optional<User> member2 = memberRepository.findById(memberId2);
+        Optional<User> member3 = memberRepository.findById(memberId3);
 
 
 
@@ -71,7 +71,7 @@ class HuntingServiceImpTest {
         hunting1.setNumberOfFish(2);
         hunting1.setId(752);
         hunting1.setCompetition(competition.get());
-        hunting1.setMember(member1.get());
+        hunting1.setUser(member1.get());
         hunting1.setFish(fishA.get());
         huntingRepository.save(hunting1);
 
@@ -79,7 +79,7 @@ class HuntingServiceImpTest {
         hunting1.setNumberOfFish(5);
         hunting1.setId(752);
         hunting1.setCompetition(competition.get());
-        hunting1.setMember(member1.get());
+        hunting1.setUser(member1.get());
         hunting1.setFish(fishA.get());
         huntingRepository.save(hunting2);
 
@@ -89,7 +89,7 @@ class HuntingServiceImpTest {
         hunting3.setNumberOfFish(3);
         hunting3.setId(754);
         hunting3.setCompetition(competition.get());
-        hunting3.setMember(member3.get());
+        hunting3.setUser(member3.get());
         hunting3.setFish(fishC.get());
         huntingRepository.save(hunting3);
 

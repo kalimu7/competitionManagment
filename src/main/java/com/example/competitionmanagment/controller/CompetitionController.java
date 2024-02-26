@@ -3,6 +3,7 @@ package com.example.competitionmanagment.controller;
 import com.example.competitionmanagment.Mapper.CompetitionMapper;
 import com.example.competitionmanagment.dto.competition.Competitiondto;
 import com.example.competitionmanagment.entity.Competition;
+import com.example.competitionmanagment.enums.Roles;
 import com.example.competitionmanagment.service.CompetitionServiceImp;
 import com.example.competitionmanagment.util.MySpecificException;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +38,7 @@ public class CompetitionController {
 
     }
 
+    @PreAuthorize("hasRole('Adherent')")
     @GetMapping("/{page}")
     public ResponseEntity<?> test(@PathVariable int page) {
         try {
@@ -56,6 +59,17 @@ public class CompetitionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
     }
+
+
+
+    @GetMapping("member/{memberNum}")
+    public ResponseEntity fetchCompetitionMember(@PathVariable Integer memberNum){
+
+        List<Competitiondto> competitions = competitionServiceImp.SelectCompetitionMembers(memberNum);
+        return ResponseEntity.ok(competitions);
+
+    }
+
     /*@GetMapping("/{filter}")
     private ResponseEntity fetchCompetitionByFilter(@PathVariable String filter) {
 

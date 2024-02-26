@@ -22,7 +22,7 @@ public class Hunting {
 
     @ManyToOne
     @JoinColumn(name = "memberid",referencedColumnName = "num")
-    private Member member;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "fishid",referencedColumnName = "name")

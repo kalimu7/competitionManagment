@@ -37,8 +37,8 @@ public class MyExceptionHanlder {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        // Customize the error message or response body as needed
-        String errorMessage = "foreingn key doesnt exist : ";
+
+        String errorMessage = "unique items";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 

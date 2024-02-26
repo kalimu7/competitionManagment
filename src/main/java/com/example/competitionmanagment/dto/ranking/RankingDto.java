@@ -11,4 +11,6 @@ public class RankingDto {
     public int rank;
     @PositiveOrZero(message = "score should be positive")
     public int score;
+
+
 }
